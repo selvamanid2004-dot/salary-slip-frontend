@@ -21,10 +21,12 @@ import {
   Building,
   Filter,
   RefreshCw,
-  Printer
+  Printer,
+  CreditCard
 } from 'lucide-react';
 import { invoiceService } from '../services/invoiceService';
 import { formatCurrency } from '../utils/formatters';
+import RazorpayCheckoutModal from '../components/billing/RazorpayCheckoutModal';
 
 export default function Billing({
   company,
@@ -40,6 +42,7 @@ export default function Billing({
   const [docTypeFilter, setDocTypeFilter] = useState('all'); // all, quotation, invoice
   const [billTypeFilter, setBillTypeFilter] = useState('all'); // all, gst, non_gst
   const [statusFilter, setStatusFilter] = useState('all');
+  const [isRazorpayModalOpen, setIsRazorpayModalOpen] = useState(false);
 
   useEffect(() => {
     loadDocuments();
@@ -135,7 +138,16 @@ export default function Billing({
           </p>
         </div>
 
-        <div style={{ display: 'flex', gap: '10px' }}>
+        <div style={{ display: 'flex', gap: '10px', flexWrap: 'wrap' }}>
+          <button
+            className="btn btn-outline"
+            onClick={() => setIsRazorpayModalOpen(true)}
+            style={{ borderColor: '#3b82f6', color: '#1d4ed8', backgroundColor: '#eff6ff' }}
+            title="Accept customer payment via Razorpay and auto-generate GST invoice"
+          >
+            <CreditCard size={16} />
+            Razorpay Pay &amp; Auto-Bill
+          </button>
           <button
             className="btn btn-outline"
             onClick={() => onOpenCreateModal && onOpenCreateModal('quotation')}
@@ -554,6 +566,20 @@ export default function Billing({
           </table>
         </div>
       </div>
+
+      {/* Razorpay Customer Payment Modal */}
+      <RazorpayCheckoutModal
+        isOpen={isRazorpayModalOpen}
+        onClose={() => setIsRazorpayModalOpen(false)}
+        company={company}
+        showToast={showToast}
+        onSuccess={(generatedInvoice) => {
+          loadDocuments();
+          if (onOpenPreview && generatedInvoice) {
+            onOpenPreview(generatedInvoice);
+          }
+        }}
+      />
     </div>
   );
 }
