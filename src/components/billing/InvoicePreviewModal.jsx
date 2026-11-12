@@ -37,22 +37,36 @@ export default function InvoicePreviewModal({
   };
 
   // Client-Side PDF Generation via html2canvas & jsPDF
+  // Accurately captures the full invoice element without clipping and slices pages if multi-page
   const handleDownloadPdf = async () => {
     const element = document.getElementById('billing-document-to-export');
     if (!element) return;
 
     try {
       setIsExporting(true);
+
+      // Measure full content height and width
+      const targetWidth = element.offsetWidth || 800;
+      const targetHeight = element.scrollHeight || element.offsetHeight;
+
+      // Capture complete element at high DPI (scale: 2) with zero scroll clipping
       const canvas = await html2canvas(element, {
-        scale: 2.5,
+        scale: 2,
         useCORS: true,
         allowTaint: true,
         logging: false,
         backgroundColor: '#ffffff',
-        windowWidth: 800
+        scrollX: 0,
+        scrollY: 0,
+        x: 0,
+        y: 0,
+        width: targetWidth,
+        height: targetHeight,
+        windowWidth: targetWidth,
+        windowHeight: targetHeight
       });
 
-      const imgData = canvas.toDataURL('image/png');
+      // A4 dimensions in mm: 210 x 297 mm
       const pdf = new jsPDF({
         orientation: 'p',
         unit: 'mm',
@@ -60,35 +74,79 @@ export default function InvoicePreviewModal({
         compress: true
       });
 
-      const pageWidth = pdf.internal.pageSize.getWidth(); // 210mm
-      const pageHeight = pdf.internal.pageSize.getHeight(); // 297mm
-      const margin = 8; // 8mm margin
+      const pageWidth = 210;
+      const pageHeight = 297;
+      const margin = 8; // 8mm margins
       const printableWidth = pageWidth - (margin * 2); // 194mm
       const printableHeight = pageHeight - (margin * 2); // 281mm
 
-      const imgWidth = printableWidth;
-      const imgHeight = (canvas.height * imgWidth) / canvas.width;
+      // Calculate conversion scale
+      const mmPerPixel = printableWidth / canvas.width;
+      const totalCanvasHeightMm = canvas.height * mmPerPixel;
+      const pageCanvasHeight = Math.floor(printableHeight / mmPerPixel);
 
-      if (imgHeight <= printableHeight + 10) {
-        // Fits comfortably on a single A4 page with proportional fit
-        const scale = imgHeight > printableHeight ? printableHeight / imgHeight : 1;
-        const finalW = imgWidth * scale;
-        const finalH = imgHeight * scale;
-        const xPos = margin + (printableWidth - finalW) / 2;
-        pdf.addImage(imgData, 'PNG', xPos, margin, finalW, finalH, undefined, 'FAST');
+      if (totalCanvasHeightMm <= printableHeight + 5) {
+        // Single page: fits entirely on one A4 sheet
+        const finalHeightMm = Math.min(printableHeight, totalCanvasHeightMm);
+        pdf.addImage(
+          canvas.toDataURL('image/png'),
+          'PNG',
+          margin,
+          margin,
+          printableWidth,
+          finalHeightMm,
+          undefined,
+          'FAST'
+        );
       } else {
-        // Multi-page export with clean slicing
-        let remainingHeight = imgHeight;
-        let position = margin;
+        // Multi-page: Slice the canvas slice-by-slice so no content is lost or clipped
+        let renderedPixelsY = 0;
+        let pageIndex = 0;
 
-        pdf.addImage(imgData, 'PNG', margin, position, imgWidth, imgHeight, undefined, 'FAST');
-        remainingHeight -= printableHeight;
+        while (renderedPixelsY < canvas.height) {
+          if (pageIndex > 0) {
+            pdf.addPage();
+          }
 
-        while (remainingHeight > 0) {
-          position = position - pageHeight;
-          pdf.addPage();
-          pdf.addImage(imgData, 'PNG', margin, position, imgWidth, imgHeight, undefined, 'FAST');
-          remainingHeight -= printableHeight;
+          const currentSliceHeight = Math.min(pageCanvasHeight, canvas.height - renderedPixelsY);
+
+          // Create offscreen canvas for the slice
+          const sliceCanvas = document.createElement('canvas');
+          sliceCanvas.width = canvas.width;
+          sliceCanvas.height = currentSliceHeight;
+
+          const sliceCtx = sliceCanvas.getContext('2d');
+          sliceCtx.fillStyle = '#ffffff';
+          sliceCtx.fillRect(0, 0, sliceCanvas.width, sliceCanvas.height);
+
+          sliceCtx.drawImage(
+            canvas,
+            0,
+            renderedPixelsY,
+            canvas.width,
+            currentSliceHeight,
+            0,
+            0,
+            canvas.width,
+            currentSliceHeight
+          );
+
+          const sliceDataUrl = sliceCanvas.toDataURL('image/png');
+          const sliceHeightMm = currentSliceHeight * mmPerPixel;
+
+          pdf.addImage(
+            sliceDataUrl,
+            'PNG',
+            margin,
+            margin,
+            printableWidth,
+            sliceHeightMm,
+            undefined,
+            'FAST'
+          );
+
+          renderedPixelsY += currentSliceHeight;
+          pageIndex++;
         }
       }
 
