@@ -3,39 +3,34 @@
  * @description Frontend API service for Razorpay checkout, configuration, and verification.
  */
 
-const API_BASE = '/api/payments';
+import { apiRequest } from './api';
 
 export const paymentService = {
   /**
    * Checks if Razorpay is configured and gets public key_id
    */
   async getConfig() {
-    const res = await fetch(`${API_BASE}/config`);
-    return res.json();
+    return apiRequest('/payments/config');
   },
 
   /**
    * Creates a Razorpay order
    */
   async createOrder(payload) {
-    const res = await fetch(`${API_BASE}/create-order`, {
+    return apiRequest('/payments/create-order', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(payload)
+      body: payload
     });
-    return res.json();
   },
 
   /**
    * Verifies payment and automatically generates GST invoice
    */
   async verifyPayment(payload) {
-    const res = await fetch(`${API_BASE}/verify`, {
+    return apiRequest('/payments/verify', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(payload)
+      body: payload
     });
-    return res.json();
   }
 };
 
