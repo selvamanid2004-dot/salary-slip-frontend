@@ -11,6 +11,7 @@ export default function Header({ currentTab, dbStatus, onQuickAction, onRefresh,
     dashboard: { title: 'Executive Dashboard', subtitle: 'Overview of workforce metrics and monthly payroll health' },
     employees: { title: 'Employee Directory', subtitle: 'Manage employee profiles, designations, and salary structures' },
     payroll: { title: 'Payroll & Salary Slips', subtitle: 'Generate, preview, print, and export official employee payslips' },
+    billing: { title: 'IT Quotations & Billing', subtitle: 'Create, manage, and download GST and Non-GST IT service invoices and quotations' },
     settings: { title: 'Company & System Settings', subtitle: 'Configure company letterhead, tax identifiers, and MySQL connection' },
     'change-password': { title: 'Security & Password Management', subtitle: 'Manage software administrative access and update your credentials' }
   };
@@ -61,6 +62,13 @@ export default function Header({ currentTab, dbStatus, onQuickAction, onRefresh,
           <button className="btn btn-primary" onClick={onQuickAction}>
             <Plus size={16} />
             Issue Payslip
+          </button>
+        )}
+
+        {currentTab === 'billing' && (
+          <button className="btn btn-primary" onClick={onQuickAction}>
+            <Plus size={16} />
+            New Invoice
           </button>
         )}
 

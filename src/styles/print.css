@@ -13,7 +13,6 @@
 
   .sidebar,
   .top-header,
-  .modal-overlay,
   .modal-header,
   .modal-footer,
   .toast-container,
@@ -21,8 +20,34 @@
     display: none !important;
   }
 
+  /* When modal is open during print, display modal content cleanly */
+  .modal-overlay {
+    position: static !important;
+    background: none !important;
+    padding: 0 !important;
+    display: block !important;
+  }
+
+  .modal-box {
+    box-shadow: none !important;
+    border: none !important;
+    max-width: 100% !important;
+    max-height: none !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    width: 100% !important;
+  }
+
+  .modal-body {
+    background: #ffffff !important;
+    padding: 0 !important;
+    overflow: visible !important;
+  }
+
   .payslip-print-target,
-  #annual-statement-sheet {
+  #annual-statement-sheet,
+  #billing-document-to-export,
+  #invoice-document-to-export {
     box-shadow: none !important;
     border: none !important;
     padding: 0 !important;
@@ -33,6 +58,6 @@
 
   @page {
     size: A4 portrait;
-    margin: 12mm 15mm;
+    margin: 10mm 12mm;
   }
 }

@@ -8,6 +8,7 @@ import {
   LayoutDashboard,
   Users,
   ReceiptText,
+  FileText,
   Building2,
   KeyRound,
   LogOut,
@@ -21,6 +22,7 @@ export default function Sidebar({ currentTab, setCurrentTab, collapsed, setColla
     { id: 'dashboard', label: 'Dashboard', icon: LayoutDashboard },
     { id: 'employees', label: 'Employees', icon: Users },
     { id: 'payroll', label: 'Payroll & Payslips', icon: ReceiptText },
+    { id: 'billing', label: 'Quotations & Billing', icon: FileText },
     { id: 'settings', label: 'Company & Settings', icon: Building2 },
     { id: 'change-password', label: 'Change Password', icon: KeyRound }
   ];

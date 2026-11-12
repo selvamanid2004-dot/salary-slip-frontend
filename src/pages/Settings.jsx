@@ -5,7 +5,7 @@
  */
 
 import React, { useState, useEffect, useRef } from 'react';
-import { Building2, Save, Upload, X, Image as ImageIcon, Database, RefreshCw } from 'lucide-react';
+import { Building2, Save, Upload, X, Image as ImageIcon, Database, RefreshCw, CreditCard } from 'lucide-react';
 import { companyService } from '../services/companyService';
 import { checkServerHealth } from '../services/api';
 
@@ -16,7 +16,15 @@ export default function Settings({ showToast, onCompanyUpdated }) {
     address_line1: '',
     mobile_number: '',
     phone: '',
-    logo_url: ''
+    email: '',
+    gst_number: '',
+    logo_url: '',
+    bank_name: '',
+    bank_account_no: '',
+    bank_ifsc_code: '',
+    bank_branch: '',
+    bank_account_holder: '',
+    bank_upi_id: ''
   });
 
   const [dbStatus, setDbStatus] = useState(null);
@@ -43,7 +51,15 @@ export default function Settings({ showToast, onCompanyUpdated }) {
           address_line1: company.address_line1 || company.address || '',
           mobile_number: company.mobile_number || company.phone || '',
           phone: company.phone || company.mobile_number || '',
-          logo_url: company.logo_url || ''
+          email: company.email || '',
+          gst_number: company.gst_number || '',
+          logo_url: company.logo_url || '',
+          bank_name: company.bank_name || '',
+          bank_account_no: company.bank_account_no || '',
+          bank_ifsc_code: company.bank_ifsc_code || '',
+          bank_branch: company.bank_branch || '',
+          bank_account_holder: company.bank_account_holder || company.company_name || '',
+          bank_upi_id: company.bank_upi_id || ''
         });
       }
       if (health?.database) {
@@ -234,20 +250,136 @@ export default function Settings({ showToast, onCompanyUpdated }) {
               />
             </div>
 
-            {/* Mobile Number */}
-            <div className="form-group" style={{ marginBottom: '18px' }}>
-              <label className="form-label">
-                Mobile Number <span className="req">*</span>
-              </label>
+            {/* Mobile Number & Email */}
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px', marginBottom: '18px' }}>
+              <div className="form-group">
+                <label className="form-label">
+                  Mobile / Phone Number <span className="req">*</span>
+                </label>
+                <input
+                  type="text"
+                  name="mobile_number"
+                  className="form-control"
+                  value={formData.mobile_number}
+                  onChange={handleChange}
+                  placeholder="e.g. +91 98765 43210"
+                  required
+                />
+              </div>
+
+              <div className="form-group">
+                <label className="form-label">Company Email</label>
+                <input
+                  type="email"
+                  name="email"
+                  className="form-control"
+                  value={formData.email}
+                  onChange={handleChange}
+                  placeholder="e.g. billing@company.com"
+                />
+              </div>
+            </div>
+
+            {/* GST Number */}
+            <div className="form-group" style={{ marginBottom: '24px' }}>
+              <label className="form-label">Company GSTIN (for GST Invoices & Bills)</label>
               <input
                 type="text"
-                name="mobile_number"
+                name="gst_number"
                 className="form-control"
-                value={formData.mobile_number}
+                value={formData.gst_number}
                 onChange={handleChange}
-                placeholder="e.g. +91 98765 43210"
-                required
+                placeholder="e.g. 07AAAAA0000A1Z5"
               />
+            </div>
+
+            {/* Company Bank Account Details */}
+            <div style={{ paddingTop: '20px', borderTop: '1px solid var(--border-light)', marginBottom: '14px' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '6px' }}>
+                <CreditCard size={18} style={{ color: 'var(--color-primary)' }} />
+                <h3 style={{ fontSize: '15px', fontWeight: 700, margin: 0 }}>Company Bank Account Details</h3>
+              </div>
+              <p style={{ fontSize: '12px', color: 'var(--text-secondary)', marginBottom: '16px' }}>
+                These bank account details automatically appear on your generated IT Quotations and Invoices (GST & Non-GST) for client payments.
+              </p>
+
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px', marginBottom: '16px' }}>
+                <div className="form-group">
+                  <label className="form-label">Bank Name</label>
+                  <input
+                    type="text"
+                    name="bank_name"
+                    className="form-control"
+                    value={formData.bank_name}
+                    onChange={handleChange}
+                    placeholder="e.g. HDFC Bank Ltd."
+                  />
+                </div>
+
+                <div className="form-group">
+                  <label className="form-label">Account Holder Name</label>
+                  <input
+                    type="text"
+                    name="bank_account_holder"
+                    className="form-control"
+                    value={formData.bank_account_holder}
+                    onChange={handleChange}
+                    placeholder="e.g. Apex Global Technologies Ltd."
+                  />
+                </div>
+              </div>
+
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px', marginBottom: '16px' }}>
+                <div className="form-group">
+                  <label className="form-label">Bank Account Number</label>
+                  <input
+                    type="text"
+                    name="bank_account_no"
+                    className="form-control"
+                    value={formData.bank_account_no}
+                    onChange={handleChange}
+                    placeholder="e.g. 50200084920194"
+                  />
+                </div>
+
+                <div className="form-group">
+                  <label className="form-label">IFSC Code</label>
+                  <input
+                    type="text"
+                    name="bank_ifsc_code"
+                    className="form-control"
+                    value={formData.bank_ifsc_code}
+                    onChange={handleChange}
+                    placeholder="e.g. HDFC0001234"
+                  />
+                </div>
+              </div>
+
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px' }}>
+                <div className="form-group">
+                  <label className="form-label">Branch Name</label>
+                  <input
+                    type="text"
+                    name="bank_branch"
+                    className="form-control"
+                    value={formData.bank_branch}
+                    onChange={handleChange}
+                    placeholder="e.g. Cyber City DLF Phase 2, Gurugram"
+                  />
+                </div>
+
+                <div className="form-group">
+                  <label className="form-label">UPI ID / VPA (Optional)</label>
+                  <input
+                    type="text"
+                    name="bank_upi_id"
+                    className="form-control"
+                    value={formData.bank_upi_id}
+                    onChange={handleChange}
+                    placeholder="e.g. companyname@okhdfcbank"
+                  />
+                </div>
+              </div>
             </div>
           </div>
 

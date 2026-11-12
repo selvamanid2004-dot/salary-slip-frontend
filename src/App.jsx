@@ -10,6 +10,7 @@ import Header from './components/layout/Header';
 import Dashboard from './pages/Dashboard';
 import Employees from './pages/Employees';
 import Payroll from './pages/Payroll';
+import Billing from './pages/Billing';
 import Settings from './pages/Settings';
 import ChangePassword from './pages/ChangePassword';
 import Login from './pages/Login';
@@ -18,6 +19,8 @@ import GeneratePayrollModal from './components/payslip/GeneratePayrollModal';
 import BulkPayrollModal from './components/payslip/BulkPayrollModal';
 import PayslipPreviewModal from './components/payslip/PayslipPreviewModal';
 import AnnualStatementModal from './components/payslip/AnnualStatementModal';
+import InvoiceModal from './components/billing/InvoiceModal';
+import InvoicePreviewModal from './components/billing/InvoicePreviewModal';
 import { employeeService } from './services/employeeService';
 import { companyService } from './services/companyService';
 import { authService } from './services/authService';
@@ -53,6 +56,13 @@ export default function App() {
 
   const [isAnnualModalOpen, setIsAnnualModalOpen] = useState(false);
   const [selectedEmpForAnnual, setSelectedEmpForAnnual] = useState(null);
+
+  // Billing & Quotations state
+  const [isInvoiceModalOpen, setIsInvoiceModalOpen] = useState(false);
+  const [editingInvoice, setEditingInvoice] = useState(null);
+  const [initialInvoiceDocType, setInitialInvoiceDocType] = useState('invoice');
+  const [isInvoicePreviewOpen, setIsInvoicePreviewOpen] = useState(false);
+  const [previewingInvoice, setPreviewingInvoice] = useState(null);
 
   // Toast state
   const [toasts, setToasts] = useState([]);
@@ -163,6 +173,34 @@ export default function App() {
     setIsAnnualModalOpen(true);
   };
 
+  const handleOpenCreateInvoice = (docType = 'invoice') => {
+    setEditingInvoice(null);
+    setInitialInvoiceDocType(docType);
+    setIsInvoiceModalOpen(true);
+  };
+
+  const handleOpenEditInvoice = (doc) => {
+    setEditingInvoice(doc);
+    setInitialInvoiceDocType(doc.doc_type || 'invoice');
+    setIsInvoiceModalOpen(true);
+  };
+
+  const handleOpenPreviewInvoice = (doc) => {
+    setPreviewingInvoice(doc);
+    setIsInvoicePreviewOpen(true);
+  };
+
+  const handleConvertQuotationInPreview = async (quotation) => {
+    try {
+      const createdInvoice = await invoiceService.convertQuotation(quotation.id);
+      showToast(`Converted to official Invoice ${createdInvoice.doc_number}!`, 'success');
+      triggerRefresh();
+      setPreviewingInvoice(createdInvoice);
+    } catch (err) {
+      showToast(err.message || 'Failed to convert quotation', 'error');
+    }
+  };
+
   // 1. Session verification loading state
   if (checkingAuth) {
     return (
@@ -224,6 +262,8 @@ export default function App() {
               ? handleOpenAddEmployee
               : currentTab === 'payroll'
               ? () => handleOpenGenerateModal(null)
+              : currentTab === 'billing'
+              ? () => handleOpenCreateInvoice('invoice')
               : undefined
           }
           onRefresh={triggerRefresh}
@@ -257,6 +297,17 @@ export default function App() {
               onOpenAnnualStatement={handleOpenAnnualStatement}
               onPreviewSlip={handlePreviewSlip}
               showToast={showToast}
+              refreshTrigger={refreshTrigger}
+            />
+          )}
+
+          {currentTab === 'billing' && (
+            <Billing
+              company={company}
+              showToast={showToast}
+              onOpenPreview={handleOpenPreviewInvoice}
+              onOpenCreateModal={handleOpenCreateInvoice}
+              onOpenEditModal={handleOpenEditInvoice}
               refreshTrigger={refreshTrigger}
             />
           )}
@@ -331,7 +382,27 @@ export default function App() {
         showToast={showToast}
       />
 
-      {/* 7. Centralized Toast Notification Stack */}
+      {/* 8. Billing Document Create / Edit Modal */}
+      <InvoiceModal
+        isOpen={isInvoiceModalOpen}
+        onClose={() => setIsInvoiceModalOpen(false)}
+        editingInvoice={editingInvoice}
+        initialDocType={initialInvoiceDocType}
+        company={company}
+        onSaved={triggerRefresh}
+        showToast={showToast}
+      />
+
+      {/* 9. Billing Document Preview & PDF Download Modal */}
+      <InvoicePreviewModal
+        isOpen={isInvoicePreviewOpen}
+        onClose={() => setIsInvoicePreviewOpen(false)}
+        invoice={previewingInvoice}
+        company={company}
+        onConvertToInvoice={handleConvertQuotationInPreview}
+      />
+
+      {/* 10. Centralized Toast Notification Stack */}
       <div className="toast-container">
         {toasts.map(toast => (
           <div key={toast.id} className={`toast ${toast.type}`}>
