@@ -161,7 +161,7 @@ export default function Billing({
           </div>
           <div className="stat-info">
             <span className="stat-label">Total Invoiced Amount</span>
-            <span className="stat-value">₹{formatCurrency(totalInvoiced)}</span>
+            <span className="stat-value">{formatCurrency(totalInvoiced)}</span>
             <span className="stat-desc">{invoicesList.length} IT Services Invoices</span>
           </div>
         </div>
@@ -172,7 +172,7 @@ export default function Billing({
           </div>
           <div className="stat-info">
             <span className="stat-label">Total Quotations Value</span>
-            <span className="stat-value">₹{formatCurrency(totalQuoted)}</span>
+            <span className="stat-value">{formatCurrency(totalQuoted)}</span>
             <span className="stat-desc">{quotationsList.length} Project Proposals</span>
           </div>
         </div>
@@ -457,7 +457,7 @@ export default function Billing({
 
                       {/* Grand Total */}
                       <td style={{ textAlign: 'right', fontWeight: 800, fontSize: '13.5px', color: '#0f172a' }}>
-                        ₹{formatCurrency(doc.grand_total || 0)}
+                        {formatCurrency(doc.grand_total || 0)}
                       </td>
 
                       {/* Status */}

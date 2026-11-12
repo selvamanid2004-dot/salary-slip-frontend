@@ -44,19 +44,54 @@ export default function InvoicePreviewModal({
     try {
       setIsExporting(true);
       const canvas = await html2canvas(element, {
-        scale: 2,
+        scale: 2.5,
         useCORS: true,
+        allowTaint: true,
         logging: false,
-        backgroundColor: '#ffffff'
+        backgroundColor: '#ffffff',
+        windowWidth: 800
       });
 
       const imgData = canvas.toDataURL('image/png');
-      const pdf = new jsPDF('p', 'mm', 'a4');
-      const pdfWidth = pdf.internal.pageSize.getWidth();
-      const pdfHeight = (canvas.height * pdfWidth) / canvas.width;
+      const pdf = new jsPDF({
+        orientation: 'p',
+        unit: 'mm',
+        format: 'a4',
+        compress: true
+      });
 
-      // Add image centered/padded
-      pdf.addImage(imgData, 'PNG', 0, 8, pdfWidth, pdfHeight);
+      const pageWidth = pdf.internal.pageSize.getWidth(); // 210mm
+      const pageHeight = pdf.internal.pageSize.getHeight(); // 297mm
+      const margin = 8; // 8mm margin
+      const printableWidth = pageWidth - (margin * 2); // 194mm
+      const printableHeight = pageHeight - (margin * 2); // 281mm
+
+      const imgWidth = printableWidth;
+      const imgHeight = (canvas.height * imgWidth) / canvas.width;
+
+      if (imgHeight <= printableHeight + 10) {
+        // Fits comfortably on a single A4 page with proportional fit
+        const scale = imgHeight > printableHeight ? printableHeight / imgHeight : 1;
+        const finalW = imgWidth * scale;
+        const finalH = imgHeight * scale;
+        const xPos = margin + (printableWidth - finalW) / 2;
+        pdf.addImage(imgData, 'PNG', xPos, margin, finalW, finalH, undefined, 'FAST');
+      } else {
+        // Multi-page export with clean slicing
+        let remainingHeight = imgHeight;
+        let position = margin;
+
+        pdf.addImage(imgData, 'PNG', margin, position, imgWidth, imgHeight, undefined, 'FAST');
+        remainingHeight -= printableHeight;
+
+        while (remainingHeight > 0) {
+          position = position - pageHeight;
+          pdf.addPage();
+          pdf.addImage(imgData, 'PNG', margin, position, imgWidth, imgHeight, undefined, 'FAST');
+          remainingHeight -= printableHeight;
+        }
+      }
+
       pdf.save(fileName);
     } catch (err) {
       console.error('Failed to export PDF:', err);

@@ -262,10 +262,8 @@ export default function InvoiceModal({
       setBankBranch(company?.bank_branch || '');
       setBankHolder(company?.bank_account_holder || company?.company_name || '');
       setBankUpi(company?.bank_upi_id || '');
-      setNotes(currentDocType === 'quotation' ? 'Quotation valid for 30 calendar days from issue date.' : 'Thank you for your business. Net payable within 15 days.');
-      setTerms(
-        '1. Remit payments only to the designated company bank account.\n2. Please mention invoice/quote number in transfer remarks.\n3. SLA support applies as per agreement.'
-      );
+      setNotes(currentDocType === 'quotation' ? 'Quotation valid for 30 calendar days from issue date.' : '');
+      setTerms('');
 
       // Fetch sequential number
       try {
@@ -973,18 +971,18 @@ export default function InvoiceModal({
                   <h3 style={{ fontSize: '14px', fontWeight: 700, margin: '0 0 12px 0' }}>Financial Summary</h3>
                   <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '13px', marginBottom: '8px' }}>
                     <span style={{ color: 'var(--text-secondary)' }}>Subtotal:</span>
-                    <span style={{ fontWeight: 700 }}>₹{formatCurrency(subtotal)}</span>
+                    <span style={{ fontWeight: 700 }}>{formatCurrency(subtotal)}</span>
                   </div>
 
                   {discountAmount > 0 && (
                     <>
                       <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '13px', marginBottom: '8px', color: 'var(--color-danger)' }}>
                         <span>Discount {discountType === 'percent' ? `(${discountValue}%)` : ''}:</span>
-                        <span style={{ fontWeight: 700 }}>-₹{formatCurrency(discountAmount)}</span>
+                        <span style={{ fontWeight: 700 }}>-{formatCurrency(discountAmount)}</span>
                       </div>
                       <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '13px', marginBottom: '8px' }}>
                         <span style={{ color: 'var(--text-secondary)' }}>Taxable Value:</span>
-                        <span style={{ fontWeight: 700 }}>₹{formatCurrency(taxableAmount)}</span>
+                        <span style={{ fontWeight: 700 }}>{formatCurrency(taxableAmount)}</span>
                       </div>
                     </>
                   )}
@@ -994,23 +992,23 @@ export default function InvoiceModal({
                       {taxType === 'igst' ? (
                         <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '12.5px', marginBottom: '6px', color: 'var(--text-secondary)' }}>
                           <span>IGST ({gstRate}%):</span>
-                          <span style={{ fontWeight: 600 }}>₹{formatCurrency(igst)}</span>
+                          <span style={{ fontWeight: 600 }}>{formatCurrency(igst)}</span>
                         </div>
                       ) : (
                         <>
                           <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '12.5px', marginBottom: '6px', color: 'var(--text-secondary)' }}>
                             <span>CGST ({gstRate / 2}%):</span>
-                            <span style={{ fontWeight: 600 }}>₹{formatCurrency(cgst)}</span>
+                            <span style={{ fontWeight: 600 }}>{formatCurrency(cgst)}</span>
                           </div>
                           <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '12.5px', marginBottom: '6px', color: 'var(--text-secondary)' }}>
                             <span>SGST ({gstRate / 2}%):</span>
-                            <span style={{ fontWeight: 600 }}>₹{formatCurrency(sgst)}</span>
+                            <span style={{ fontWeight: 600 }}>{formatCurrency(sgst)}</span>
                           </div>
                         </>
                       )}
                       <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '13px', marginBottom: '8px', borderTop: '1px solid var(--border-light)', paddingTop: '6px' }}>
                         <span style={{ fontWeight: 600, color: '#1e40af' }}>Total GST Tax:</span>
-                        <span style={{ fontWeight: 700, color: '#1e40af' }}>₹{formatCurrency(totalTax)}</span>
+                        <span style={{ fontWeight: 700, color: '#1e40af' }}>{formatCurrency(totalTax)}</span>
                       </div>
                     </>
                   ) : (
@@ -1033,7 +1031,7 @@ export default function InvoiceModal({
                   }}
                 >
                   <span style={{ fontSize: '14px', fontWeight: 800 }}>Grand Total:</span>
-                  <span style={{ fontSize: '17px', fontWeight: 800 }}>₹{formatCurrency(grandTotal)}</span>
+                  <span style={{ fontSize: '17px', fontWeight: 800 }}>{formatCurrency(grandTotal)}</span>
                 </div>
               </div>
             </div>
@@ -1120,28 +1118,16 @@ export default function InvoiceModal({
               </div>
             </div>
 
-            {/* Terms & Notes */}
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '14px' }}>
-              <div className="form-group">
-                <label className="form-label">Notes</label>
-                <textarea
-                  rows="2"
-                  className="form-control"
-                  value={notes}
-                  onChange={(e) => setNotes(e.target.value)}
-                  placeholder="Notes for client"
-                />
-              </div>
-              <div className="form-group">
-                <label className="form-label">Terms &amp; Conditions</label>
-                <textarea
-                  rows="2"
-                  className="form-control"
-                  value={terms}
-                  onChange={(e) => setTerms(e.target.value)}
-                  placeholder="Payment terms and delivery agreement"
-                />
-              </div>
+            {/* Notes */}
+            <div className="form-group">
+              <label className="form-label">Notes (Optional)</label>
+              <textarea
+                rows="2"
+                className="form-control"
+                value={notes}
+                onChange={(e) => setNotes(e.target.value)}
+                placeholder="Optional notes or reference instructions for client"
+              />
             </div>
           </div>
 
