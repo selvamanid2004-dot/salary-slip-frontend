@@ -217,7 +217,7 @@ export default function Billing({
         <div className="card-body" style={{ padding: '16px 20px' }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '14px' }}>
             {/* Search */}
-            <form onSubmit={handleSearchSubmit} style={{ display: 'flex', gap: '8px', minWidth: '300px', flex: 1 }}>
+            <form onSubmit={handleSearchSubmit} style={{ display: 'flex', gap: '8px', minWidth: 'min(100%, 260px)', flex: 1 }}>
               <div style={{ position: 'relative', width: '100%' }}>
                 <Search size={16} style={{ position: 'absolute', left: '12px', top: '50%', transform: 'translateY(-50%)', color: 'var(--text-muted)' }} />
                 <input

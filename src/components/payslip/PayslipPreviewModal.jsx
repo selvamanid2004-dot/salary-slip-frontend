@@ -81,8 +81,10 @@ export default function PayslipPreviewModal({ isOpen, onClose, payroll, employee
           </button>
         </div>
 
-        <div className="modal-body" style={{ backgroundColor: '#f1f5f9', padding: '24px' }}>
-          <PayslipDocument payroll={payroll} employee={emp} company={company} />
+        <div className="modal-body" style={{ backgroundColor: '#f1f5f9', padding: '16px' }}>
+          <div className="document-preview-wrapper">
+            <PayslipDocument payroll={payroll} employee={emp} company={company} />
+          </div>
         </div>
 
         <div className="modal-footer">

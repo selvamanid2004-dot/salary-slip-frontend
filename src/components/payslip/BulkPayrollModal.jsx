@@ -192,11 +192,8 @@ export default function BulkPayrollModal({
           >
             {/* Top Config Controls Bar */}
             <div
+              className="bulk-config-grid"
               style={{
-                display: 'grid',
-                gridTemplateColumns: '1.2fr 1fr 1.2fr auto',
-                gap: '12px',
-                alignItems: 'flex-end',
                 backgroundColor: '#f8fafc',
                 border: '1px solid #e2e8f0',
                 padding: '12px 16px',

@@ -166,7 +166,7 @@ export default function InvoicePreviewModal({
         onClick={(e) => e.stopPropagation()}
         style={{ maxWidth: '940px', maxHeight: '92vh', display: 'flex', flexDirection: 'column' }}
       >
-        <div className="modal-header" style={{ padding: '16px 24px' }}>
+        <div className="modal-header modal-header-responsive" style={{ padding: '16px 20px', flexWrap: 'wrap', gap: '12px' }}>
           <div>
             <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
               <h2 style={{ fontSize: '18px', margin: 0 }}>
@@ -248,18 +248,20 @@ export default function InvoicePreviewModal({
         <div
           className="modal-body"
           style={{
-            padding: '24px',
+            padding: '16px',
             backgroundColor: '#f1f5f9',
             overflowY: 'auto',
             display: 'flex',
             justifyContent: 'center'
           }}
         >
-          <InvoiceDocument
-            id="billing-document-to-export"
-            invoice={invoice}
-            company={company}
-          />
+          <div className="document-preview-wrapper" style={{ display: 'flex', justifyContent: 'center', width: '100%' }}>
+            <InvoiceDocument
+              id="billing-document-to-export"
+              invoice={invoice}
+              company={company}
+            />
+          </div>
         </div>
       </div>
     </div>

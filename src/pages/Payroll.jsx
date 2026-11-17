@@ -154,7 +154,7 @@ export default function Payroll({
               </div>
 
               {/* Quick Search Input */}
-              <div style={{ position: 'relative', minWidth: '220px' }}>
+              <div style={{ position: 'relative', minWidth: 'min(100%, 220px)', flex: 1 }}>
                 <Search
                   size={15}
                   style={{ position: 'absolute', left: '10px', top: '11px', color: 'var(--text-muted)' }}

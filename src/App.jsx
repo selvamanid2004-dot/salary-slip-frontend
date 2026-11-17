@@ -31,12 +31,16 @@ import './styles/components.css';
 import './styles/print.css';
 
 export default function App() {
-  const [isAuthenticated, setIsAuthenticated] = useState(authService.isAuthenticated());
-  const [currentUser, setCurrentUser] = useState(authService.getCurrentUser());
-  const [checkingAuth, setCheckingAuth] = useState(true);
+  const hasInitialToken = authService.isAuthenticated();
+  const [isAuthenticated, setIsAuthenticated] = useState(hasInitialToken);
+  const [currentUser, setCurrentUser] = useState(hasInitialToken ? authService.getCurrentUser() : null);
+  // Fast Startup Optimization:
+  // If user has no active session, skip loading spinner completely and show Login screen instantly (0ms)
+  const [checkingAuth, setCheckingAuth] = useState(hasInitialToken);
 
   const [currentTab, setCurrentTab] = useState('dashboard');
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
+  const [mobileSidebarOpen, setMobileSidebarOpen] = useState(false);
   const [dbStatus, setDbStatus] = useState(null);
   const [company, setCompany] = useState(null);
   const [employees, setEmployees] = useState([]);
@@ -79,7 +83,7 @@ export default function App() {
     setToasts(prev => prev.filter(t => t.id !== id));
   };
 
-  // Session verification on mount
+  // Session verification on mount (only runs if an active session token exists in sessionStorage)
   useEffect(() => {
     const verifySession = async () => {
       if (authService.isAuthenticated()) {
@@ -103,7 +107,26 @@ export default function App() {
       setCheckingAuth(false);
     };
 
-    verifySession();
+    if (hasInitialToken) {
+      verifySession();
+    } else {
+      setCheckingAuth(false);
+    }
+  }, []);
+
+  // Listen for session invalidation events (e.g. login from another device)
+  useEffect(() => {
+    const handleSessionTerminated = (e) => {
+      authService.clearSession();
+      setIsAuthenticated(false);
+      setCurrentUser(null);
+      showToast(e.detail?.message || 'Session ended because another device logged in.', 'error');
+    };
+
+    window.addEventListener('workpulse:session_terminated', handleSessionTerminated);
+    return () => {
+      window.removeEventListener('workpulse:session_terminated', handleSessionTerminated);
+    };
   }, []);
 
   // Initial data loading
@@ -140,8 +163,8 @@ export default function App() {
     triggerRefresh();
   };
 
-  const handleLogout = () => {
-    authService.logout();
+  const handleLogout = async () => {
+    await authService.logout();
     setIsAuthenticated(false);
     setCurrentUser(null);
     showToast('Signed out successfully.', 'info');
@@ -241,12 +264,26 @@ export default function App() {
   // 3. Authenticated: Render Main Application Suite
   return (
     <div className="app-container">
-      {/* 1. Collapsible Sidebar */}
+      {/* Mobile Drawer Backdrop Overlay */}
+      {mobileSidebarOpen && (
+        <div
+          className="sidebar-mobile-backdrop active"
+          onClick={() => setMobileSidebarOpen(false)}
+          aria-hidden="true"
+        />
+      )}
+
+      {/* 1. Collapsible Sidebar (Desktop + Mobile Drawer) */}
       <Sidebar
         currentTab={currentTab}
-        setCurrentTab={setCurrentTab}
+        setCurrentTab={(tab) => {
+          setCurrentTab(tab);
+          setMobileSidebarOpen(false);
+        }}
         collapsed={sidebarCollapsed}
         setCollapsed={setSidebarCollapsed}
+        isOpenMobile={mobileSidebarOpen}
+        onCloseMobile={() => setMobileSidebarOpen(false)}
         onLogout={handleLogout}
       />
 
@@ -257,6 +294,7 @@ export default function App() {
           dbStatus={dbStatus}
           currentUser={currentUser}
           onLogout={handleLogout}
+          onToggleMobileMenu={() => setMobileSidebarOpen(prev => !prev)}
           onQuickAction={
             currentTab === 'employees'
               ? handleOpenAddEmployee

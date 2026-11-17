@@ -131,9 +131,9 @@ export default function Settings({ showToast, onCompanyUpdated }) {
   };
 
   return (
-    <div className="animate-fade-in" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(360px, 1fr))', gap: '24px' }}>
+    <div className="animate-fade-in settings-layout-grid">
       {/* 1. Company Information & Logo Form */}
-      <div className="card" style={{ gridColumn: 'span 2' }}>
+      <div className="card settings-company-card">
         <div className="card-header">
           <div>
             <h2>Company Details & Logo</h2>
@@ -251,7 +251,7 @@ export default function Settings({ showToast, onCompanyUpdated }) {
             </div>
 
             {/* Mobile Number & Email */}
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px', marginBottom: '18px' }}>
+            <div className="form-row">
               <div className="form-group">
                 <label className="form-label">
                   Mobile / Phone Number <span className="req">*</span>
@@ -303,7 +303,7 @@ export default function Settings({ showToast, onCompanyUpdated }) {
                 These bank account details automatically appear on your generated IT Quotations and Invoices (GST & Non-GST) for client payments.
               </p>
 
-              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px', marginBottom: '16px' }}>
+              <div className="form-row">
                 <div className="form-group">
                   <label className="form-label">Bank Name</label>
                   <input
@@ -329,7 +329,7 @@ export default function Settings({ showToast, onCompanyUpdated }) {
                 </div>
               </div>
 
-              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px', marginBottom: '16px' }}>
+              <div className="form-row">
                 <div className="form-group">
                   <label className="form-label">Bank Account Number</label>
                   <input
@@ -355,7 +355,7 @@ export default function Settings({ showToast, onCompanyUpdated }) {
                 </div>
               </div>
 
-              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px' }}>
+              <div className="form-row">
                 <div className="form-group">
                   <label className="form-label">Branch Name</label>
                   <input

@@ -1,6 +1,7 @@
 /**
  * @file Sidebar.jsx
- * @description Main application navigation sidebar with collapsible layout.
+ * @description Main application navigation sidebar with desktop collapsing
+ * and mobile overlay app drawer navigation.
  */
 
 import React from 'react';
@@ -14,10 +15,19 @@ import {
   LogOut,
   ChevronLeft,
   ChevronRight,
-  Briefcase
+  Briefcase,
+  X
 } from 'lucide-react';
 
-export default function Sidebar({ currentTab, setCurrentTab, collapsed, setCollapsed, onLogout }) {
+export default function Sidebar({
+  currentTab,
+  setCurrentTab,
+  collapsed,
+  setCollapsed,
+  isOpenMobile,
+  onCloseMobile,
+  onLogout
+}) {
   const navItems = [
     { id: 'dashboard', label: 'Dashboard', icon: LayoutDashboard },
     { id: 'employees', label: 'Employees', icon: Users },
@@ -27,25 +37,56 @@ export default function Sidebar({ currentTab, setCurrentTab, collapsed, setColla
     { id: 'change-password', label: 'Change Password', icon: KeyRound }
   ];
 
+  const handleNavClick = (tabId) => {
+    setCurrentTab(tabId);
+    if (onCloseMobile) {
+      onCloseMobile();
+    }
+  };
+
+  const handleLogoutClick = () => {
+    if (onCloseMobile) {
+      onCloseMobile();
+    }
+    if (onLogout) {
+      onLogout();
+    }
+  };
+
   return (
-    <aside className={`sidebar ${collapsed ? 'collapsed' : ''}`}>
+    <aside className={`sidebar ${collapsed ? 'collapsed' : ''} ${isOpenMobile ? 'mobile-open' : ''}`}>
       <div className="sidebar-header">
         <div className="brand-wrapper">
           <div className="brand-icon">
             <Briefcase size={22} />
           </div>
-          {!collapsed && (
+          {(!collapsed || isOpenMobile) && (
             <div className="brand-text">
               Work<span>Pulse</span>
             </div>
           )}
         </div>
+
+        {/* Desktop Collapse Toggle */}
         <button
-          className="sidebar-toggle-btn"
+          type="button"
+          className="sidebar-toggle-btn desktop-only-btn"
           onClick={() => setCollapsed(!collapsed)}
           title={collapsed ? 'Expand Sidebar' : 'Collapse Sidebar'}
+          aria-label="Toggle sidebar collapse"
         >
           {collapsed ? <ChevronRight size={18} /> : <ChevronLeft size={18} />}
+        </button>
+
+        {/* Mobile Drawer Close Button */}
+        <button
+          type="button"
+          className="sidebar-mobile-close-btn"
+          onClick={onCloseMobile}
+          title="Close Navigation"
+          aria-label="Close navigation drawer"
+        >
+          <X size={20} />
         </button>
       </div>
 
@@ -56,12 +97,13 @@ export default function Sidebar({ currentTab, setCurrentTab, collapsed, setColla
           return (
             <button
               key={item.id}
+              type="button"
               className={`nav-item ${isActive ? 'active' : ''}`}
-              onClick={() => setCurrentTab(item.id)}
-              title={collapsed ? item.label : undefined}
+              onClick={() => handleNavClick(item.id)}
+              title={collapsed && !isOpenMobile ? item.label : undefined}
             >
               <Icon size={20} />
-              {!collapsed && <span>{item.label}</span>}
+              {(!collapsed || isOpenMobile) && <span>{item.label}</span>}
             </button>
           );
         })}
@@ -70,16 +112,17 @@ export default function Sidebar({ currentTab, setCurrentTab, collapsed, setColla
       <div className="sidebar-footer">
         {onLogout && (
           <button
+            type="button"
             className="sidebar-logout-btn"
-            onClick={onLogout}
-            title={collapsed ? 'Sign Out' : undefined}
+            onClick={handleLogoutClick}
+            title={collapsed && !isOpenMobile ? 'Sign Out' : undefined}
           >
             <LogOut size={18} />
-            {!collapsed && <span>Sign Out</span>}
+            {(!collapsed || isOpenMobile) && <span>Sign Out</span>}
           </button>
         )}
-        {!collapsed && (
-          <div style={{ fontSize: '11px', color: 'var(--text-sidebar)', textAlign: 'center', marginTop: '6px' }}>
+        {(!collapsed || isOpenMobile) && (
+          <div className="sidebar-version-tag">
             WorkPulse v1.0 • Enterprise
           </div>
         )}

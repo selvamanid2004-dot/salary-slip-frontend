@@ -58,7 +58,7 @@ export default function Employees({
       <div className="card" style={{ marginBottom: '20px' }}>
         <div className="card-body" style={{ padding: '16px 20px' }}>
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '14px', flexWrap: 'wrap' }}>
-            <div style={{ position: 'relative', flex: '1', minWidth: '260px' }}>
+            <div style={{ position: 'relative', flex: '1', minWidth: 'min(100%, 240px)' }}>
               <Search
                 size={16}
                 style={{ position: 'absolute', left: '12px', top: '12px', color: 'var(--text-muted)' }}

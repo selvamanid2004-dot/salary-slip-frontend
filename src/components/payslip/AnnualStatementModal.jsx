@@ -188,12 +188,9 @@ export default function AnnualStatementModal({
 
         {/* Filter Controls Bar */}
         <div
+          className="statement-filter-bar"
           style={{
-            display: 'grid',
-            gridTemplateColumns: '1.4fr 1fr auto',
-            gap: '12px',
-            alignItems: 'flex-end',
-            padding: '12px 24px',
+            padding: '12px 20px',
             backgroundColor: '#f8fafc',
             borderBottom: '1px solid #e2e8f0',
             flexShrink: 0
@@ -258,7 +255,7 @@ export default function AnnualStatementModal({
           className="modal-body"
           style={{
             backgroundColor: '#f1f5f9',
-            padding: '28px 24px',
+            padding: '16px',
             overflowY: 'auto',
             flex: 1
           }}
@@ -269,21 +266,22 @@ export default function AnnualStatementModal({
               <div>Generating Annual Salary Statement...</div>
             </div>
           ) : (
-            <div
-              className="payslip-print-target"
-              id="annual-statement-sheet"
-              style={{
-                backgroundColor: '#ffffff',
-                border: '1px solid #e2e8f0',
-                borderRadius: '8px',
-                padding: '36px',
-                maxWidth: '860px',
-                margin: '0 auto',
-                color: '#0f172a',
-                fontFamily: "'Inter', sans-serif",
-                boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.05)'
-              }}
-            >
+            <div className="document-preview-wrapper">
+              <div
+                className="payslip-print-target"
+                id="annual-statement-sheet"
+                style={{
+                  backgroundColor: '#ffffff',
+                  border: '1px solid #e2e8f0',
+                  borderRadius: '8px',
+                  padding: '36px',
+                  maxWidth: '860px',
+                  margin: '0 auto',
+                  color: '#0f172a',
+                  fontFamily: "'Inter', sans-serif",
+                  boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.05)'
+                }}
+              >
               {/* 1. Statement Letterhead */}
               <div
                 style={{
@@ -583,7 +581,8 @@ export default function AnnualStatementModal({
                 This is a computer-generated Annual Salary Statement • WorkPulse System
               </div>
             </div>
-          )}
+          </div>
+        )}
         </div>
 
         {/* Modal Footer: Fixed Pinned Action Buttons */}

@@ -117,7 +117,7 @@ export default function Dashboard({ onNavigate, onPreviewSlip, showToast }) {
       </div>
 
       {/* 2. Middle Row: Quick Actions & Department Breakdown */}
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(340px, 1fr))', gap: '24px', marginBottom: '28px' }}>
+      <div className="dashboard-two-col" style={{ marginBottom: '28px' }}>
         {/* Quick Launchpad */}
         <div className="card">
           <div className="card-header">

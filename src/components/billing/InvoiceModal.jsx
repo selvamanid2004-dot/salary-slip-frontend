@@ -542,7 +542,7 @@ export default function InvoiceModal({
             </div>
 
             {/* Document Metadata Row */}
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '14px', marginBottom: '20px' }}>
+            <div className="invoice-grid-4" style={{ marginBottom: '20px' }}>
               <div className="form-group">
                 <label className="form-label">
                   {docType === 'quotation' ? 'Quote #' : 'Invoice #'} <span className="req">*</span>
@@ -620,7 +620,7 @@ export default function InvoiceModal({
                 <h3 style={{ fontSize: '14px', fontWeight: 700, margin: 0 }}>Customer & Client Details</h3>
               </div>
 
-              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '14px', marginBottom: '12px' }}>
+              <div className="invoice-grid-2" style={{ marginBottom: '12px' }}>
                 <div className="form-group">
                   <label className="form-label">Client / Contact Name <span className="req">*</span></label>
                   <input
@@ -645,7 +645,7 @@ export default function InvoiceModal({
                 </div>
               </div>
 
-              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '14px', marginBottom: '12px' }}>
+              <div className="invoice-grid-2" style={{ marginBottom: '12px' }}>
                 <div className="form-group">
                   <label className="form-label">Contact Number <span className="req">*</span></label>
                   <input
@@ -681,7 +681,7 @@ export default function InvoiceModal({
                 />
               </div>
 
-              <div style={{ display: 'grid', gridTemplateColumns: '1.2fr 1fr 1fr 1.2fr', gap: '12px' }}>
+              <div className="invoice-grid-4">
                 <div className="form-group">
                   <label className="form-label">City</label>
                   <input
@@ -766,7 +766,7 @@ export default function InvoiceModal({
                     marginBottom: '10px'
                   }}
                 >
-                  <div style={{ display: 'grid', gridTemplateColumns: '2fr 1fr 1fr 1.2fr 40px', gap: '10px', alignItems: 'center', marginBottom: '8px' }}>
+                  <div className="invoice-item-grid">
                     {/* Service Preset Dropdown / Custom Input */}
                     <div>
                       <label className="form-label" style={{ fontSize: '11px', marginBottom: '2px' }}>
@@ -869,7 +869,7 @@ export default function InvoiceModal({
             </div>
 
             {/* Calculations & Taxes Grid */}
-            <div style={{ display: 'grid', gridTemplateColumns: '1.2fr 1fr', gap: '20px', marginBottom: '20px' }}>
+            <div className="invoice-calc-grid" style={{ marginBottom: '20px' }}>
               {/* Left Column: Tax Structure (if GST) & Discounts */}
               <div
                 style={{
@@ -889,7 +889,7 @@ export default function InvoiceModal({
                     <div style={{ fontSize: '12px', fontWeight: 700, color: '#1e40af', marginBottom: '8px' }}>
                       GST Configuration (Standard IT Rate 18%)
                     </div>
-                    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px' }}>
+                    <div className="invoice-grid-2">
                       <div>
                         <label className="form-label" style={{ fontSize: '11px' }}>GST Rate (%)</label>
                         <select
@@ -930,7 +930,7 @@ export default function InvoiceModal({
                 )}
 
                 {/* Discount */}
-                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px' }}>
+                <div className="invoice-grid-2">
                   <div>
                     <label className="form-label" style={{ fontSize: '11px' }}>Discount Type</label>
                     <select
@@ -1051,7 +1051,7 @@ export default function InvoiceModal({
                 <h3 style={{ fontSize: '14px', fontWeight: 700, margin: 0 }}>Company Bank Account (Printed on Bill)</h3>
               </div>
 
-              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '12px', marginBottom: '10px' }}>
+              <div className="invoice-grid-3" style={{ marginBottom: '10px' }}>
                 <div className="form-group">
                   <label className="form-label" style={{ fontSize: '11px' }}>Bank Name</label>
                   <input
@@ -1084,7 +1084,7 @@ export default function InvoiceModal({
                 </div>
               </div>
 
-              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '12px' }}>
+              <div className="invoice-grid-3">
                 <div className="form-group">
                   <label className="form-label" style={{ fontSize: '11px' }}>Branch Name</label>
                   <input

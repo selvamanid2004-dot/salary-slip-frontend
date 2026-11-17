@@ -1205,3 +1205,473 @@
   color: #f87171;
 }
 
+
+
+/* ====================================================================
+   15. Comprehensive Mobile & Tablet Responsive Architecture
+   ==================================================================== */
+
+/* --- Default Layout Utilities --- */
+.sidebar-mobile-backdrop {
+  position: fixed;
+  inset: 0;
+  background-color: rgba(15, 23, 42, 0.65);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+  z-index: 1050;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.25s ease;
+}
+
+.sidebar-mobile-backdrop.active {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.sidebar-mobile-close-btn {
+  display: none;
+}
+
+.mobile-hamburger-btn {
+  display: none;
+}
+
+.mobile-brand-tag {
+  display: none;
+}
+
+.dashboard-two-col {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 24px;
+}
+
+.settings-layout-grid {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: 24px;
+}
+
+.form-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 14px;
+}
+
+.invoice-item-grid {
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr 1.2fr 40px;
+  gap: 10px;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+.invoice-grid-4 {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 14px;
+}
+
+.invoice-grid-3 {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+}
+
+.invoice-grid-2 {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+}
+
+.invoice-calc-grid {
+  display: grid;
+  grid-template-columns: 1.2fr 1fr;
+  gap: 20px;
+}
+
+.bulk-config-grid {
+  display: grid;
+  grid-template-columns: 1.2fr 1fr 1.2fr auto;
+  gap: 12px;
+  align-items: flex-end;
+}
+
+.statement-filter-bar {
+  display: grid;
+  grid-template-columns: 1.4fr 1fr auto;
+  gap: 12px;
+  align-items: flex-end;
+}
+
+.document-preview-wrapper {
+  width: 100%;
+  overflow-x: auto !important;
+  -webkit-overflow-scrolling: touch;
+}
+
+.table-container {
+  width: 100%;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+/* --- Breakpoint 1: Tablet & Small Screens (<= 992px) --- */
+@media (max-width: 992px) {
+  /* Off-canvas mobile navigation drawer */
+  .sidebar {
+    position: fixed !important;
+    top: 0 !important;
+    bottom: 0 !important;
+    left: 0 !important;
+    width: 280px !important;
+    max-width: 85vw !important;
+    transform: translateX(-100%);
+    transition: transform 0.28s cubic-bezier(0.16, 1, 0.3, 1) !important;
+    z-index: 1100 !important;
+    box-shadow: 6px 0 24px rgba(0, 0, 0, 0.35);
+  }
+
+  .sidebar.mobile-open {
+    transform: translateX(0) !important;
+  }
+
+  .sidebar.collapsed {
+    width: 280px !important;
+  }
+
+  .desktop-only-btn {
+    display: none !important;
+  }
+
+  .sidebar-mobile-close-btn {
+    display: flex !important;
+    align-items: center;
+    justify-content: center;
+    background: rgba(255, 255, 255, 0.08);
+    border: none;
+    color: #ffffff;
+    padding: 7px;
+    border-radius: var(--radius-sm);
+    cursor: pointer;
+    transition: background 0.15s ease;
+  }
+
+  .sidebar-mobile-close-btn:hover {
+    background: rgba(255, 255, 255, 0.16);
+  }
+
+  /* Compact Header */
+  .top-header {
+    padding: 0 16px !important;
+    height: 60px !important;
+  }
+
+  .header-left {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .header-title-section {
+    display: none !important;
+  }
+
+  .mobile-hamburger-btn {
+    display: flex !important;
+    align-items: center;
+    justify-content: center;
+    background: #f8fafc;
+    border: 1px solid var(--border-light);
+    border-radius: var(--radius-md);
+    padding: 8px;
+    color: var(--text-main);
+    cursor: pointer;
+    transition: all 0.15s ease;
+  }
+
+  .mobile-hamburger-btn:hover {
+    background: #f1f5f9;
+  }
+
+  .mobile-brand-tag {
+    display: flex !important;
+    align-items: center;
+    gap: 8px;
+    font-family: var(--font-heading);
+    font-size: 17px;
+    font-weight: 700;
+    color: #0f172a;
+  }
+
+  .mobile-brand-icon {
+    width: 32px;
+    height: 32px;
+    border-radius: 8px;
+    background: linear-gradient(135deg, #3b82f6, #1d4ed8);
+    color: #ffffff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 2px 8px rgba(59, 130, 246, 0.35);
+  }
+
+  .mobile-brand-name span {
+    color: var(--color-primary);
+  }
+
+  /* Grid Layouts on Tablet */
+  .dashboard-two-col {
+    grid-template-columns: 1fr !important;
+    gap: 18px;
+  }
+
+  .settings-layout-grid {
+    grid-template-columns: 1fr !important;
+    gap: 18px;
+  }
+
+  .stats-grid {
+    grid-template-columns: repeat(2, 1fr) !important;
+    gap: 14px;
+    margin-bottom: 20px;
+  }
+
+  .invoice-grid-4 {
+    grid-template-columns: repeat(2, 1fr) !important;
+    gap: 12px;
+  }
+
+  .invoice-calc-grid {
+    grid-template-columns: 1fr !important;
+    gap: 16px;
+  }
+
+  .bulk-config-grid {
+    grid-template-columns: 1fr 1fr !important;
+    gap: 10px;
+    align-items: stretch;
+  }
+}
+
+/* --- Breakpoint 2: Medium Screens & Modals (<= 768px) --- */
+@media (max-width: 768px) {
+  .modal-overlay {
+    padding: 10px !important;
+  }
+
+  .modal-box,
+  .modal-box.large {
+    width: 100% !important;
+    max-width: 100% !important;
+    max-height: 94vh !important;
+    margin: 0 !important;
+    border-radius: var(--radius-lg) !important;
+  }
+
+  .modal-header {
+    padding: 14px 16px !important;
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+
+  .modal-body {
+    padding: 16px !important;
+  }
+
+  .modal-footer {
+    padding: 12px 16px !important;
+    flex-direction: column-reverse !important;
+    gap: 8px !important;
+  }
+
+  .modal-footer .btn,
+  .modal-footer button {
+    width: 100% !important;
+    justify-content: center !important;
+    min-height: 42px;
+  }
+
+  /* Line Item Grid on Mobile */
+  .invoice-item-grid {
+    grid-template-columns: 1fr 1fr !important;
+    gap: 10px !important;
+  }
+
+  .invoice-item-grid > div:first-child {
+    grid-column: span 2 !important;
+  }
+
+  .invoice-item-grid > div:last-child {
+    grid-column: span 2 !important;
+    text-align: right !important;
+    padding-top: 4px !important;
+  }
+
+  .invoice-grid-3 {
+    grid-template-columns: 1fr !important;
+    gap: 10px;
+  }
+
+  .statement-filter-bar {
+    grid-template-columns: 1fr !important;
+    gap: 10px;
+  }
+
+  .card-header {
+    flex-direction: column !important;
+    align-items: flex-start !important;
+    gap: 12px !important;
+    padding: 16px !important;
+  }
+
+  .card-header .btn {
+    width: 100% !important;
+    justify-content: center;
+  }
+
+  .card-body {
+    padding: 16px !important;
+  }
+}
+
+/* --- Breakpoint 3: Mobile Phones (<= 640px) --- */
+@media (max-width: 640px) {
+  .header-actions {
+    gap: 6px !important;
+  }
+
+  .header-user-badge .header-user-name {
+    display: none !important;
+  }
+
+  .header-user-badge {
+    padding: 4px !important;
+    border-radius: 50% !important;
+  }
+
+  .btn-header-logout .logout-label-text {
+    display: none !important;
+  }
+
+  .btn-header-logout {
+    padding: 7px !important;
+  }
+
+  .header-action-btn .btn-label-text {
+    display: none !important;
+  }
+
+  .header-action-btn {
+    padding: 7px 10px !important;
+  }
+
+  .stats-grid {
+    grid-template-columns: 1fr !important;
+    gap: 12px !important;
+    margin-bottom: 16px;
+  }
+
+  .stat-card {
+    padding: 16px 18px !important;
+  }
+
+  .stat-value {
+    font-size: 20px !important;
+  }
+
+  .form-row {
+    grid-template-columns: 1fr !important;
+    gap: 12px !important;
+    margin-bottom: 12px !important;
+  }
+
+  .form-grid {
+    grid-template-columns: 1fr !important;
+    gap: 12px !important;
+  }
+
+  .invoice-grid-2 {
+    grid-template-columns: 1fr !important;
+    gap: 10px !important;
+  }
+
+  .bulk-config-grid {
+    grid-template-columns: 1fr !important;
+    gap: 10px !important;
+  }
+
+  .form-control,
+  .form-select {
+    font-size: 15px !important;
+    min-height: 40px;
+  }
+
+  .form-actions-row {
+    flex-direction: column-reverse !important;
+    gap: 8px !important;
+    width: 100% !important;
+  }
+
+  .form-actions-row .btn {
+    width: 100% !important;
+    justify-content: center;
+  }
+
+  /* Responsive Touch Friendly Tables */
+  .data-table th,
+  .data-table td {
+    padding: 10px 12px !important;
+    font-size: 12px !important;
+    white-space: nowrap;
+  }
+
+  /* Toast Notification Stack */
+  .toast-container {
+    left: 12px !important;
+    right: 12px !important;
+    bottom: 16px !important;
+    max-width: calc(100vw - 24px) !important;
+  }
+
+  .toast {
+    min-width: 0 !important;
+    width: 100% !important;
+    padding: 12px 14px !important;
+  }
+
+  /* Login Portal Mobile View */
+  .login-page-wrapper {
+    padding: 16px !important;
+  }
+
+  .login-card-container {
+    padding: 24px 18px !important;
+    border-radius: 16px !important;
+    width: 100% !important;
+  }
+
+  .login-brand-title {
+    font-size: 22px !important;
+  }
+}
+
+/* --- Breakpoint 4: Ultra Compact Phones (<= 480px) --- */
+@media (max-width: 480px) {
+  .db-pill .db-pill-text {
+    display: none !important;
+  }
+
+  .db-pill {
+    padding: 6px 8px !important;
+  }
+
+  .mobile-brand-name {
+    display: none !important;
+  }
+
+  .invoice-grid-4 {
+    grid-template-columns: 1fr !important;
+  }
+}

@@ -1,12 +1,21 @@
 /**
  * @file Header.jsx
- * @description Top navigation bar displaying page context, live MySQL status, and quick action buttons.
+ * @description Top navigation bar with responsive mobile menu toggle,
+ * live MySQL diagnostics, dynamic title, and quick action launch buttons.
  */
 
 import React from 'react';
-import { Database, Plus, RefreshCw, LogOut } from 'lucide-react';
+import { Database, Plus, RefreshCw, LogOut, Menu, Briefcase } from 'lucide-react';
 
-export default function Header({ currentTab, dbStatus, onQuickAction, onRefresh, currentUser, onLogout }) {
+export default function Header({
+  currentTab,
+  dbStatus,
+  onQuickAction,
+  onRefresh,
+  currentUser,
+  onLogout,
+  onToggleMobileMenu
+}) {
   const titles = {
     dashboard: { title: 'Executive Dashboard', subtitle: 'Overview of workforce metrics and monthly payroll health' },
     employees: { title: 'Employee Directory', subtitle: 'Manage employee profiles, designations, and salary structures' },
@@ -23,9 +32,31 @@ export default function Header({ currentTab, dbStatus, onQuickAction, onRefresh,
 
   return (
     <header className="top-header">
-      <div className="header-title-section">
-        <h1>{currentInfo.title}</h1>
-        <p>{currentInfo.subtitle}</p>
+      <div className="header-left">
+        {/* Mobile Hamburger Drawer Trigger */}
+        <button
+          type="button"
+          className="mobile-hamburger-btn"
+          onClick={onToggleMobileMenu}
+          aria-label="Toggle navigation drawer"
+          title="Open menu"
+        >
+          <Menu size={22} />
+        </button>
+
+        {/* Mobile Mini Brand Icon */}
+        <div className="mobile-brand-tag">
+          <div className="mobile-brand-icon">
+            <Briefcase size={18} />
+          </div>
+          <span className="mobile-brand-name">Work<span>Pulse</span></span>
+        </div>
+
+        {/* Desktop / Tablet Title Section */}
+        <div className="header-title-section">
+          <h1>{currentInfo.title}</h1>
+          <p>{currentInfo.subtitle}</p>
+        </div>
       </div>
 
       <div className="header-actions">
@@ -40,35 +71,35 @@ export default function Header({ currentTab, dbStatus, onQuickAction, onRefresh,
         >
           <span className={`status-dot ${isMySQL ? 'green' : 'yellow'}`} />
           <Database size={13} />
-          <span>{isMySQL ? 'MySQL Connected' : 'Mock DB Mode'}</span>
+          <span className="db-pill-text">{isMySQL ? 'MySQL Connected' : 'Mock DB'}</span>
         </div>
 
         {/* Refresh button */}
         {onRefresh && (
-          <button className="icon-btn" onClick={onRefresh} title="Refresh Data">
+          <button className="icon-btn header-refresh-btn" onClick={onRefresh} title="Refresh Data">
             <RefreshCw size={15} />
           </button>
         )}
 
         {/* Quick Action Button */}
         {currentTab === 'employees' && (
-          <button className="btn btn-primary" onClick={onQuickAction}>
+          <button className="btn btn-primary header-action-btn" onClick={onQuickAction}>
             <Plus size={16} />
-            Add Employee
+            <span className="btn-label-text">Add Employee</span>
           </button>
         )}
 
         {currentTab === 'payroll' && (
-          <button className="btn btn-primary" onClick={onQuickAction}>
+          <button className="btn btn-primary header-action-btn" onClick={onQuickAction}>
             <Plus size={16} />
-            Issue Payslip
+            <span className="btn-label-text">Issue Payslip</span>
           </button>
         )}
 
         {currentTab === 'billing' && (
-          <button className="btn btn-primary" onClick={onQuickAction}>
+          <button className="btn btn-primary header-action-btn" onClick={onQuickAction}>
             <Plus size={16} />
-            New Invoice
+            <span className="btn-label-text">New Invoice</span>
           </button>
         )}
 
@@ -77,14 +108,14 @@ export default function Header({ currentTab, dbStatus, onQuickAction, onRefresh,
           <div className="header-user-avatar">
             {username.charAt(0).toUpperCase()}
           </div>
-          <span>{displayName}</span>
+          <span className="header-user-name">{displayName}</span>
         </div>
 
         {/* Logout button */}
         {onLogout && (
           <button className="btn-header-logout" onClick={onLogout} title="Sign Out">
             <LogOut size={16} />
-            <span>Sign Out</span>
+            <span className="logout-label-text">Sign Out</span>
           </button>
         )}
       </div>

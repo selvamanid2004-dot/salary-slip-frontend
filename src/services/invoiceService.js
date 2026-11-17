@@ -3,7 +3,7 @@
  * @description Frontend API service for IT Company Quotation and Billing operations.
  */
 
-import { apiRequest } from './api';
+import { apiRequest, getSessionToken } from './api';
 
 export const invoiceService = {
   /**
@@ -102,7 +102,7 @@ export const invoiceService = {
    * Get direct printable HTML view URL
    */
   getPrintUrl(id) {
-    const token = localStorage.getItem('workpulse_admin_token');
+    const token = getSessionToken();
     const origin = import.meta.env.VITE_API_URL ? import.meta.env.VITE_API_URL.replace(/\/$/, '') : '';
     return `${origin}/api/billing/${id}/print${token ? `?token=${encodeURIComponent(token)}` : ''}`;
   }

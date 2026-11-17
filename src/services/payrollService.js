@@ -3,7 +3,7 @@
  * @description Frontend API service for Payroll and Salary Slip operations.
  */
 
-import { apiRequest } from './api';
+import { apiRequest, getSessionToken } from './api';
 
 export const payrollService = {
   /**
@@ -93,7 +93,7 @@ export const payrollService = {
     if (month) params.append('month', month);
     if (year) params.append('year', year);
     if (employee_id) params.append('employee_id', employee_id);
-    const token = localStorage.getItem('workpulse_admin_token');
+    const token = getSessionToken();
     if (token) params.append('token', token);
     const query = params.toString() ? `?${params.toString()}` : '';
     const origin = import.meta.env.VITE_API_URL ? import.meta.env.VITE_API_URL.replace(/\/$/, '') : '';
@@ -104,7 +104,7 @@ export const payrollService = {
    * Helper to get direct printable HTML URL
    */
   getPrintHtmlUrl(id) {
-    const token = localStorage.getItem('workpulse_admin_token');
+    const token = getSessionToken();
     const origin = import.meta.env.VITE_API_URL ? import.meta.env.VITE_API_URL.replace(/\/$/, '') : '';
     return `${origin}/api/payroll/${id}/html${token ? `?token=${encodeURIComponent(token)}` : ''}`;
   },
