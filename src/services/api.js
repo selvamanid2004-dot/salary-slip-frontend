@@ -21,6 +21,13 @@ export function getApiOrigin() {
     return envUrl.replace(/\/+$/, '').replace(/\/api$/, '');
   }
 
+  // When running inside Electron desktop application, connect to hosted cloud backend
+  if (typeof window !== 'undefined' && window.location) {
+    if (window.location.protocol === 'file:' || (window.navigator && window.navigator.userAgent.includes('Electron'))) {
+      return 'https://salary-slip-backend.onrender.com';
+    }
+  }
+
   // Auto-detect Render deployment pair if VITE_API_URL was omitted on Render
   if (typeof window !== 'undefined' && window.location && window.location.hostname) {
     const hostname = window.location.hostname;
