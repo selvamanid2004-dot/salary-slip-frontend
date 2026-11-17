@@ -3,7 +3,7 @@
  * @description Frontend API service for Payroll and Salary Slip operations.
  */
 
-import { apiRequest, getSessionToken } from './api';
+import { apiRequest, getSessionToken, getApiOrigin } from './api';
 
 export const payrollService = {
   /**
@@ -96,7 +96,7 @@ export const payrollService = {
     const token = getSessionToken();
     if (token) params.append('token', token);
     const query = params.toString() ? `?${params.toString()}` : '';
-    const origin = import.meta.env.VITE_API_URL ? import.meta.env.VITE_API_URL.replace(/\/$/, '') : '';
+    const origin = getApiOrigin();
     return `${origin}/api/payroll/export/csv${query}`;
   },
 
@@ -105,7 +105,7 @@ export const payrollService = {
    */
   getPrintHtmlUrl(id) {
     const token = getSessionToken();
-    const origin = import.meta.env.VITE_API_URL ? import.meta.env.VITE_API_URL.replace(/\/$/, '') : '';
+    const origin = getApiOrigin();
     return `${origin}/api/payroll/${id}/html${token ? `?token=${encodeURIComponent(token)}` : ''}`;
   },
 

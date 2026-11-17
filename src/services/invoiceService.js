@@ -3,7 +3,7 @@
  * @description Frontend API service for IT Company Quotation and Billing operations.
  */
 
-import { apiRequest, getSessionToken } from './api';
+import { apiRequest, getSessionToken, getApiOrigin } from './api';
 
 export const invoiceService = {
   /**
@@ -103,7 +103,7 @@ export const invoiceService = {
    */
   getPrintUrl(id) {
     const token = getSessionToken();
-    const origin = import.meta.env.VITE_API_URL ? import.meta.env.VITE_API_URL.replace(/\/$/, '') : '';
+    const origin = getApiOrigin();
     return `${origin}/api/billing/${id}/print${token ? `?token=${encodeURIComponent(token)}` : ''}`;
   }
 };

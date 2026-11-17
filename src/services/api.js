@@ -1,11 +1,48 @@
 /**
  * @file api.js
- * @description Centralized HTTP request client with standard error extraction
- * and active device session header propagation.
+ * @description Centralized HTTP request client with standard error extraction,
+ * smart environment & Render origin resolution, and active device session propagation.
  */
 
-const API_ORIGIN = import.meta.env.VITE_API_URL ? import.meta.env.VITE_API_URL.replace(/\/$/, '') : '';
-const BASE_URL = `${API_ORIGIN}/api`;
+/**
+ * Resolves the backend API base origin cleanly.
+ * Handles trailing slashes, trailing '/api', Render pair detection, and local dev.
+ */
+export function getApiOrigin() {
+  try {
+    const custom = localStorage.getItem('workpulse_api_url');
+    if (custom && custom.trim()) {
+      return custom.trim().replace(/\/+$/, '').replace(/\/api$/, '');
+    }
+  } catch {}
+
+  const envUrl = (import.meta.env.VITE_API_URL || '').trim();
+  if (envUrl) {
+    return envUrl.replace(/\/+$/, '').replace(/\/api$/, '');
+  }
+
+  // Auto-detect Render deployment pair if VITE_API_URL was omitted on Render
+  if (typeof window !== 'undefined' && window.location && window.location.hostname) {
+    const hostname = window.location.hostname;
+    // e.g. salary-slip-frontend.onrender.com -> https://salary-slip-backend.onrender.com
+    if (hostname.includes('-frontend.onrender.com')) {
+      return `https://${hostname.replace('-frontend.onrender.com', '-backend.onrender.com')}`;
+    }
+    if (hostname.includes('frontend') && hostname.endsWith('.onrender.com')) {
+      return `https://${hostname.replace('frontend', 'backend')}`;
+    }
+  }
+
+  return '';
+}
+
+/**
+ * Resolves the full base URL for API endpoints (e.g. "https://backend.onrender.com/api" or "/api")
+ */
+export function getApiBaseUrl() {
+  const origin = getApiOrigin();
+  return origin ? `${origin}/api` : '/api';
+}
 
 /**
  * Helper to get device ID without circular dependency
@@ -30,10 +67,11 @@ export function getSessionToken() {
 }
 
 /**
- * Executes an HTTP fetch request with standardized JSON handling
+ * Executes an HTTP fetch request with standardized JSON handling and network error resolution
  */
 export async function apiRequest(endpoint, options = {}) {
-  const url = `${BASE_URL}${endpoint}`;
+  const baseUrl = getApiBaseUrl();
+  const url = `${baseUrl}${endpoint}`;
   const defaultHeaders = {
     'Content-Type': 'application/json',
     'Accept': 'application/json'
@@ -86,6 +124,17 @@ export async function apiRequest(endpoint, options = {}) {
     return data;
   } catch (error) {
     console.error(`[API Request Error] ${endpoint}:`, error);
+
+    // Provide friendly, actionable context if the browser encounters a network or CORS drop
+    if (error.name === 'TypeError' && (error.message.includes('Failed to fetch') || error.message.includes('NetworkError'))) {
+      const friendlyError = new Error(
+        'Unable to connect to the backend server. If running on Render Free Tier, the backend service may be spinning up from sleep (takes ~30-40 seconds). Please wait a moment and try again.'
+      );
+      friendlyError.isNetworkError = true;
+      friendlyError.originalError = error;
+      throw friendlyError;
+    }
+
     throw error;
   }
 }
