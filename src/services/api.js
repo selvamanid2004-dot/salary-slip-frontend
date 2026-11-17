@@ -21,10 +21,10 @@ export function getApiOrigin() {
     return envUrl.replace(/\/+$/, '').replace(/\/api$/, '');
   }
 
-  // When running inside Electron desktop application, connect to hosted cloud backend
+  // When running inside Electron desktop application, connect to the embedded backend engine
   if (typeof window !== 'undefined' && window.location) {
     if (window.location.protocol === 'file:' || (window.navigator && window.navigator.userAgent.includes('Electron'))) {
-      return 'https://salary-slip-backend.onrender.com';
+      return 'http://127.0.0.1:5000';
     }
   }
 
