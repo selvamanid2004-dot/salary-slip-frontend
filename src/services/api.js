@@ -21,26 +21,29 @@ export function getApiOrigin() {
     return envUrl.replace(/\/+$/, '').replace(/\/api$/, '');
   }
 
-  // When running inside Electron desktop application, connect to the embedded backend engine
+  // Primary shared cloud backend URL (Render API) to keep Desktop and Web 100% in sync
+  const CLOUD_BACKEND_URL = 'https://salary-slip-backend-api.onrender.com';
+
+  // When running inside Electron desktop application, connect to the shared cloud backend
   if (typeof window !== 'undefined' && window.location) {
     if (window.location.protocol === 'file:' || (window.navigator && window.navigator.userAgent.includes('Electron'))) {
-      return 'http://127.0.0.1:5000';
+      return CLOUD_BACKEND_URL;
     }
   }
 
   // Auto-detect Render deployment pair if VITE_API_URL was omitted on Render
   if (typeof window !== 'undefined' && window.location && window.location.hostname) {
     const hostname = window.location.hostname;
-    // e.g. salary-slip-frontend.onrender.com -> https://salary-slip-backend.onrender.com
+    // e.g. salary-slip-frontend.onrender.com -> https://salary-slip-backend-api.onrender.com
     if (hostname.includes('-frontend.onrender.com')) {
-      return `https://${hostname.replace('-frontend.onrender.com', '-backend.onrender.com')}`;
+      return `https://${hostname.replace('-frontend.onrender.com', '-backend-api.onrender.com')}`;
     }
     if (hostname.includes('frontend') && hostname.endsWith('.onrender.com')) {
-      return `https://${hostname.replace('frontend', 'backend')}`;
+      return CLOUD_BACKEND_URL;
     }
   }
 
-  return '';
+  return CLOUD_BACKEND_URL;
 }
 
 /**
